@@ -1,0 +1,53 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Case {
+  id                String    @id @default(cuid())
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  callerName        String?
+  callerNumber      String?
+  location          String
+  
+  animal            String
+  caseInfo          String
+  additionalInfo    String?
+  animalAdditionalInfo String?
+  
+  priority          String
+  actionTaken       String
+  species           String?
+  
+  actionConclusion  String?
+  phoneHolder       String?
+  driver            String?
+  phoneHolderDriver String?
+  completedAt       DateTime?
+  
+  status            String
+  username          String?
+
+  userId            String?
+  user              User?    @relation(fields: [userId], references: [id])
+
+  @@index([createdAt])
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String?
+  googleId     String?  @unique
+  role         String   @default("RESCUER")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  cases        Case[]
+}
